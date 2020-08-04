@@ -17,7 +17,10 @@ pipeline {
                 echo 'Deploying....'
             }
         }
+        stage('Validation') {
+            steps {
+                echo 'Validating deployment....'
+            }
+        }
     }
 }
-
-
