@@ -2,6 +2,11 @@ pipeline {
     agent any
 
     stages {
+        stage('Checking env') {
+            steps {
+                echo 'Setting files..'
+            }
+        }
         stage('Build') {
             steps {
                 echo 'Building..'
