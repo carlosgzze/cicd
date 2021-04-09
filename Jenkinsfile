@@ -27,5 +27,10 @@ pipeline {
                 echo 'Validating deployment....'
             }
         }
+        stage('Monitor') {
+            steps {
+                echo 'Monitoring deploy....'
+            }
+        }
     }
 }
