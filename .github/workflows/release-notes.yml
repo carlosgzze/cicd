@@ -26,4 +26,4 @@ jobs:
           sudo apt update
           sudo apt install jq -y
           bash
-          curl https://api.github.com/repos/carlosgzze/cicd/pulls\?base\=master\&state\=closed\&is\=merged\&per_page\=1 | jq '.'
+          curl https://api.github.com/repos/carlosgzze/cicd/pulls\?base\=master\&state\=closed\&is\=merged\&per_page\=1 jq '.[] | {PR_url: .url, PR_number: .number, PR_title: .title, PR_body: .body}'
