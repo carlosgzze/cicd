@@ -12,7 +12,6 @@ on:
         description: Base Version
         default: v1.0.0
         required: true
-  
 jobs:
   release:
     runs-on: ubuntu-latest
