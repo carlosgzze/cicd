@@ -17,6 +17,10 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
+      # Getting information of pull request
+      - name: Getting PR number
+        run: echo We use the global workflow variable $BUILD_CONFIGURATION
+      
       # Runs a set of commands using the runners shell
       - name: Getting PR information
         run: |
