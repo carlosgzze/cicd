@@ -19,9 +19,9 @@ jobs:
 
       # Getting information of pull request
       - name: Getting PR number
-        - run: echo " Print a single environment variable (the commit SHA ) - ${{ github.sha }} "
-        - run: echo "Print all environment variables"
-        - run:  env
+        run: echo " Print a single environment variable (the commit SHA ) - ${{ github.sha }} "
+        run: echo "Print all environment variables"
+        run:  env
       
       # Runs a set of commands using the runners shell
       - name: Getting PR information
