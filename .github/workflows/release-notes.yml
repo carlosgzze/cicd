@@ -19,7 +19,9 @@ jobs:
 
       # Getting information of pull request
       - name: Getting PR number
-        run: echo We use the global workflow variable $BUILD_CONFIGURATION
+        - run: echo " Print a single environment variable (the commit SHA ) - ${{ github.sha }} "
+        - run: echo "Print all environment variables"
+        - run:  env
       
       # Runs a set of commands using the runners shell
       - name: Getting PR information
@@ -27,5 +29,7 @@ jobs:
           sudo apt update
           sudo apt install jq -y
           bash
-          curl https://api.github.com/repos/carlosgzze/cicd/pulls\?base\=master\&state\=closed\&is\=merged\&per_page\=1 | jq '.[] | {PR_url: .url, PR_number: .number, PR_title: .title, PR_body: .body}' | sed -n -e 's/^.*### Release Notes\\r\\n\\r\\n//p' | sed -n -e 's/### Reviewers\\r\\n\\r\\n.*$//p' | sed -e 's/\\r\\n/ /g'
+          curl https://api.github.com/repos/carlosgzze/cicd/pulls\?base\=master\&state\=closed\&is\=merged\&per_page\=1 | jq '.[] | {PR_url: .url, PR_number: .number, PR_title: .title, PR_body: .body}' > PR.log 
+          cat PR.log
+          sed -n -e 's/^.*### Release Notes\\r\\n\\r\\n//p' PR.log | sed -n -e 's/### Reviewers\\r\\n\\r\\n.*$//p' | sed -e 's/\\r\\n/ /g'
           
