@@ -24,9 +24,13 @@ jobs:
           sudo apt install jq -y
           sudo apt install curl -y
           bash
-          export pr_number=`git show ${{ github.sha }} | sed -n -e 's/^.*Merge pull request #//p' | sed -n -e 's/from.*$//p' | sed 's/ //g'`
+          echo "Getting PR number"
+          pr_number=$(git show ${{ github.sha }} | sed -n -e 's/^.*Merge pull request #//p' | sed -n -e 's/from.*$//p' | sed 's/ //g')
+          echo "Showing PR number"
           echo $pr_number
+          echo "Making curl call"
           curl "https://api.github.com/repos/carlosgzze/cicd/pulls/$pr_number" | jq '.body' | sed -e 's/\\r\\n/ /g' | sed -n -e 's/^.*### Release Notes //p' | sed -n -e 's/### Reviewers.*$//p' > releasenotes.out
+          echo "Showing content of Release Notes section"
           releasenotes=$(cat releasenotes.out)
           echo "This is the content of Release Notes for this PR: $releasenotes"
           cat releasenotes.out
