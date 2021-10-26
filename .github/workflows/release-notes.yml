@@ -25,7 +25,8 @@ jobs:
           sudo apt install curl -y
           bash
           echo "Getting PR number"
-          pr_number=$(git show ${{ github.sha }} | sed -n -e 's/^.*Merge pull request #//p' | sed -n -e 's/from.*$//p' | sed 's/ //g')
+          git show ${{ github.sha }} > pr_info.out
+          pr_number=$(sed -n -e 's/^.*Merge pull request #//p' pr_info.out | sed -n -e 's/from.*$//p' | sed 's/ //g')
           echo "Showing PR number"
           echo $pr_number
           echo "Making curl call"
