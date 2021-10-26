@@ -21,6 +21,8 @@ jobs:
       - name: Getting PR information
         run: |
           sudo apt update
+          sudo apt install jq -y
+          sudo apt install curl -y
           bash
           export pr_number=`git show ${{ github.sha }} | sed -n -e 's/^.*Merge pull request #//p' | sed -n -e 's/from.*$//p' | sed 's/ //g'`
           echo $pr_number
