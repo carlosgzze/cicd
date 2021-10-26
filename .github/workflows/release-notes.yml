@@ -21,10 +21,9 @@ jobs:
       - name: Getting PR information
         run: |
           sudo apt update
-          sudo apt install jq -y
-          sudo apt install curl -y
           bash
           export pr_number=`git show ${{ github.sha }} | sed -n -e 's/^.*Merge pull request #//p' | sed -n -e 's/from.*$//p' | sed 's/ //g'`
+          echo $pr_number
           curl "https://api.github.com/repos/carlosgzze/cicd/pulls/${pr_number}" | jq '.body' | sed -e 's/\\r\\n/ /g' | sed -n -e 's/^.*### Release Notes //p' | sed -n -e 's/### Reviewers.*$//p' > releasenotes.out
           releasenotes=$(cat releasenotes.out)
           echo "This is the content of Release Notes for this PR: $releasenotes"
