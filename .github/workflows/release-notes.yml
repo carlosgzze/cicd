@@ -25,10 +25,8 @@ jobs:
           sudo apt install curl -y
           bash
           echo "Getting PR number"
-          git show ${{ github.sha }} > pr_info1.out
-          sed -n -e 's/^.*Merge pull request #//p' pr_info1.out > pr_info2.out
-          sed -n -e 's/from.*$//p' pr_info2.out > pr_info3.out
-          pr_number=$(sed 's/ //g' pr_info3.out)
+          git show ${{ github.sha }} | sed -n -e 's/^.*Merge pull request #//p' | sed -n -e 's/from.*$//p' | sed 's/ //g' > pr_info.out
+          pr_number=$(cat pr_info.out)
           echo "Showing PR number"
           echo $pr_number
           echo "Making curl call"
@@ -36,5 +34,4 @@ jobs:
           echo "Showing content of Release Notes section"
           releasenotes=$(cat releasenotes.out)
           echo "This is the content of Release Notes for this PR: $releasenotes"
-          cat releasenotes.out
           
