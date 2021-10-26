@@ -23,7 +23,7 @@ jobs:
           sudo apt update
           sudo apt install jq -y
           bash
-          pr_number=`git show ${{ github.sha }} | sed -n -e 's/^.*Merge pull request #//p' | sed -n -e 's/from.*$//p | sed 's/ //g'`
+          pr_number=`git show ${{ github.sha }} | sed -n -e 's/^.*Merge pull request #//p' | sed -n -e 's/from.*$//p' | sed 's/ //g'`
           releasenotes=$(curl "https://api.github.com/repos/carlosgzze/cicd/pulls/$pr_number" | jq '.body' | sed -e 's/\\r\\n/ /g' | sed -n -e 's/^.*### Release Notes //p' | sed -n -e 's/### Reviewers.*$//p')
           echo $releasenotes
           
