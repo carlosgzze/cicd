@@ -36,7 +36,7 @@ jobs:
           releasenotes=$(cat releasenotes.out)
           echo "This is the content of Release Notes for this PR: $releasenotes"
           echo "Building JSON message"
-          cat << EOF > ./target/slack_message.json
+          cat << EOF > ./slack_message.json
           {
           "text": "This is the content of Release Notes for this PR: $releasenotes"
           }
@@ -46,4 +46,4 @@ jobs:
         uses: opspresso/action-slack@master
         env:
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
-          JSON_PATH: ./target/slack_message.json
+          JSON_PATH: ./slack_message.json
