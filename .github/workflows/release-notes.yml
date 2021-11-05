@@ -40,7 +40,7 @@ jobs:
           echo "Building JSON message"
           cat << EOF > ./slack_message.json
           {
-          "text": "PR $pr_url Merged into master\ Content of Release Notes section for this PR: $releasenotes"
+          "text": "PR $pr_url Merged into master DynamoDS/Dynamo Repository\nContent of Release Notes section for this PR: $releasenotes"
           }
           EOF
       
