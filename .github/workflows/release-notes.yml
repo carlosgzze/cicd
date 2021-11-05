@@ -31,14 +31,16 @@ jobs:
           sed -n -e 's/from.*$//p' pr_info2.out > pr_info3.out
           pr_number=$(sed 's/ //g' pr_info3.out)
           echo "PR number is $pr_number"
-          echo "Getting Release Notes ection from PR body"
+          echo "Getting PR URL"
+          curl "https://api.github.com/repos/carlosgzze/cicd/pulls/33" | jq '._links.html.href' | sed -e 's/"/ /g' | sed 's/ //g' > pr_url.out
+          pr_url=(cat pr_url.out)
+          echo "Getting Release Notes Section from PR body"
           curl "https://api.github.com/repos/carlosgzze/cicd/pulls/$pr_number" | jq '.body' | sed -e 's/\\r\\n/ /g' | sed -n -e 's/^.*### Release Notes //p' | sed -n -e 's/### Reviewers.*$//p' > releasenotes.out
           releasenotes=$(cat releasenotes.out)
-          echo "This is the content of Release Notes for this PR: $releasenotes"
           echo "Building JSON message"
           cat << EOF > ./slack_message.json
           {
-          "text": "This is the content of Release Notes for this PR: $releasenotes"
+          "text": "PR $pr_url Merged into master\ Content of Release Notes section for this PR: $releasenotes"
           }
           EOF
       
