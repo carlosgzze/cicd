@@ -20,18 +20,30 @@ jobs:
       # Getting Pr information from the commit SHA
       - name: Getting PR information
         run: |
+          echo "Installing requirements"
           sudo apt update
           sudo apt install jq -y
           sudo apt install curl -y
           bash
-          echo "Getting PR number"
-          git show ${{ github.sha }} | sed -n -e 's/^.*Merge pull request #//p' | sed -n -e 's/from.*$//p' | sed 's/ //g' > pr_info.out
-          pr_number=$(cat pr_info.out)
-          echo "Showing PR number"
-          echo $pr_number
-          echo "Making curl call"
+          echo "Getting PR number from merge"
+          git show ${{ github.sha }} > pr_info1.out
+          sed -n -e 's/^.*Merge pull request #//p' pr_info1.out > pr_info2.out
+          sed -n -e 's/from.*$//p' pr_info2.out > pr_info3.out
+          pr_number=$(sed 's/ //g' pr_info3.out)
+          echo "PR number is $pr_number"
+          echo "Getting Release Notes ection from PR body"
           curl "https://api.github.com/repos/carlosgzze/cicd/pulls/$pr_number" | jq '.body' | sed -e 's/\\r\\n/ /g' | sed -n -e 's/^.*### Release Notes //p' | sed -n -e 's/### Reviewers.*$//p' > releasenotes.out
-          echo "Showing content of Release Notes section"
           releasenotes=$(cat releasenotes.out)
           echo "This is the content of Release Notes for this PR: $releasenotes"
-          
+          echo "Building JSON message"
+          cat << EOF > ./target/slack_message.json
+          {
+          "text": "This is the content of Release Notes for this PR: $releasenotes"
+          }
+          EOF
+      
+      - name: Notify to Slack
+        uses: opspresso/action-slack@master
+        env:
+          SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+          JSON_PATH: ./target/slack_message.json
