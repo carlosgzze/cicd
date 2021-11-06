@@ -34,7 +34,7 @@ jobs:
           echo "Getting PR URL"
           curl "https://api.github.com/repos/carlosgzze/cicd/pulls/33" | jq '._links.html.href' | sed -e 's/"/ /g' | sed 's/ //g' > pr_url.out
           prurl=$(cat pr_url.out)
-          echo "$prurl"
+          echo "This is the URL of the PR: $prurl"
           echo "Getting Release Notes Section from PR body"
           curl "https://api.github.com/repos/carlosgzze/cicd/pulls/$pr_number" | jq '.body' | sed -e 's/\\r\\n/ /g' | sed -n -e 's/^.*### Release Notes //p' | sed -n -e 's/### Reviewers.*$//p' > releasenotes.out
           releasenotes=$(cat releasenotes.out)
