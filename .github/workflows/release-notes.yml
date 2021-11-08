@@ -44,6 +44,7 @@ jobs:
           "text": "PR $prurl Merged into master\ Content of Release Notes section for this PR: $releasenotes"
           }
           EOF
+          cat ./slack_message.json
       
       - name: Notify to Slack
         uses: opspresso/action-slack@master
