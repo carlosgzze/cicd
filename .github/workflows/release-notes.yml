@@ -42,7 +42,7 @@ jobs:
           echo "Building JSON message"
           cat << EOF > ./slack_message.json
           {
-          "text": "PR $prurl merged into master.\n Content of Release Notes section: $releasenotes
+          "text": "PR $prurl merged into master. \n Content of Release Notes section: $releasenotes
           }
           EOF
           cat ./slack_message.json
