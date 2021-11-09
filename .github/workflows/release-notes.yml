@@ -32,7 +32,7 @@ jobs:
           pr_number=$(sed 's/ //g' pr_info3.out)
           echo "PR number is $pr_number"
           echo "Getting PR URL"
-          curl "https://api.github.com/repos/carlosgzze/cicd/pulls/33" | jq '._links.html.href' | sed -e 's/"/ /g' | sed 's/ //g' > pr_url_convert.out
+          curl "https://api.github.com/repos/carlosgzze/cicd/pulls/$pr_number" | jq '._links.html.href' | sed -e 's/"/ /g' | sed 's/ //g' > pr_url_convert.out
           cat pr_url_convert.out | sed -e 's/\//\\\//g' > pr_url.out
           prurl=$(cat pr_url.out)
           echo "This is the URL of the PR: $prurl"
@@ -42,7 +42,7 @@ jobs:
           echo "Building JSON message"
           cat << EOF > ./slack_message.json
           {
-          "text": "PR $prurl merged into master\n Content of Release Notes section: $releasenotes"
+          "text": "PR $prurl merged into master.\n Content of Release Notes section: $releasenotes
           }
           EOF
           cat ./slack_message.json
