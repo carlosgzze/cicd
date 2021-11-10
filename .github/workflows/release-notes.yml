@@ -1,4 +1,4 @@
-## This is a basic workflow to help you get started with Actions
+## Workflow for retrieve Release -notes ection from PRs
 
 name: CI
 
@@ -35,7 +35,6 @@ jobs:
           curl "https://api.github.com/repos/carlosgzze/cicd/pulls/$pr_number" | jq '._links.html.href' | sed -e 's/"/ /g' | sed 's/ //g' > pr_url_convert.out
           cat pr_url_convert.out | sed -e 's/\//\\\//g' > pr_url.out
           prurl=$(cat pr_url.out)
-          echo "This is the URL of the PR: $prurl"
           echo "Getting Release Notes Section from PR body"
           curl "https://api.github.com/repos/carlosgzze/cicd/pulls/$pr_number" | jq '.body' | sed -e 's/\\r\\n/ /g' | sed -n -e 's/^.*### Release Notes //p' | sed -n -e 's/### Reviewers.*$//p' > releasenotes.out
           releasenotes=$(cat releasenotes.out)
@@ -45,7 +44,9 @@ jobs:
           "text": "PR $prurl merged into master.\n Content of Release Notes section: $releasenotes"
           }
           EOF
-          cat ./slack_message.json
+          echo github.event.number = ${{ github.event.number  }}
+          echo github.event.pull_request.number = ${{ github.event.pull_request.number }}
+          echo github.event.issue.number = ${{ github.event.issue.number }}
       
       - name: Notify to Slack
         uses: opspresso/action-slack@master
