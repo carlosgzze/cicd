@@ -35,27 +35,9 @@ jobs:
           releasenotes=$(cat releasenotes.out)
       
       # Sending slack notification
-      - name: Slack notification
-        uses: tiloio/slack-webhook-action@v1.1.2
-        with:
-          slack_web_hook_url: ${{ secrets.SLACK_TOKEN }}
-          slack_json: '{
-            "blocks": [
-              {
-                "type": "section",
-                "text": {
-                  "type": "mrkdwn",
-                  "text": "PR was merged into master $prurl by {{GITHUB_ACTOR}}"
-                }
-              },
-              {
-                "type": "context",
-                "elements": [
-                  {
-                    "type": "mrkdwn",
-                    "text": ":speech_balloon: Release Notes section:  $releasenotes"
-                  }
-                ]
-              }
-            ]
-          }'
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_MESSAGE: 'Content of Release Notes section: $releasenotes'
+          SLACK_TITLE: 'PR $prurl merged into master by ${{ GITHUB_ACTOR }}.'
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
