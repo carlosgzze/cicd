@@ -25,18 +25,13 @@ jobs:
           sudo apt install jq -y
           sudo apt install curl -y
           bash
-          echo "Getting PR number from merge"
-          git show ${{ github.sha }} > pr_info1.out
-          sed -n -e 's/^.*Merge pull request #//p' pr_info1.out > pr_info2.out
-          sed -n -e 's/from.*$//p' pr_info2.out > pr_info3.out
-          pr_number=$(sed 's/ //g' pr_info3.out)
-          echo "PR number is $pr_number"
+          echo "PR number is ${{ github.event.pull_request.number }}"
           echo "Getting PR URL"
-          curl "https://api.github.com/repos/carlosgzze/cicd/pulls/$pr_number" | jq '._links.html.href' | sed -e 's/"/ /g' | sed 's/ //g' > pr_url_convert.out
+          curl "https://api.github.com/repos/carlosgzze/cicd/pulls/${{ github.event.pull_request.number }}" | jq '._links.html.href' | sed -e 's/"/ /g' | sed 's/ //g' > pr_url_convert.out
           cat pr_url_convert.out | sed -e 's/\//\\\//g' > pr_url.out
           prurl=$(cat pr_url.out)
           echo "Getting Release Notes Section from PR body"
-          curl "https://api.github.com/repos/carlosgzze/cicd/pulls/$pr_number" | jq '.body' | sed -e 's/\\r\\n/ /g' | sed -n -e 's/^.*### Release Notes //p' | sed -n -e 's/### Reviewers.*$//p' > releasenotes.out
+          curl "https://api.github.com/repos/carlosgzze/cicd/pulls/${{ github.event.pull_request.number }}" | jq '.body' | sed -e 's/\\r\\n/ /g' | sed -n -e 's/^.*### Release Notes //p' | sed -n -e 's/### Reviewers.*$//p' > releasenotes.out
           releasenotes=$(cat releasenotes.out)
           echo "Building JSON message"
           cat << EOF > ./slack_message.json
@@ -44,9 +39,8 @@ jobs:
           "text": "PR $prurl merged into master.\n Content of Release Notes section: $releasenotes"
           }
           EOF
-          echo github.event.number = ${{ github.event.number  }}
+          echo github.event.number = ${{ github.event.number }}
           echo github.event.pull_request.number = ${{ github.event.pull_request.number }}
-          echo github.event.issue.number = ${{ github.event.issue.number }}
       
       - name: Notify to Slack
         uses: opspresso/action-slack@master
