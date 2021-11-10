@@ -15,7 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: Check out repository
       - uses: actions/checkout@v2
       
       # Getting PR information from the commit SHA
@@ -35,6 +34,7 @@ jobs:
           curl "https://api.github.com/repos/carlosgzze/cicd/pulls/${{ github.event.pull_request.number }}" | jq '.body' | sed -e 's/\\r\\n/ /g' | sed -n -e 's/^.*### Release Notes //p' | sed -n -e 's/### Reviewers.*$//p' > releasenotes.out
           releasenotes=$(cat releasenotes.out)
       
+      # Sending slack notification
       - name: Slack notification
         uses: tiloio/slack-webhook-action@v1.1.2
         with:
