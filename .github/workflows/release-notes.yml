@@ -40,4 +40,4 @@ jobs:
         env:
           SLACK_MESSAGE: 'Content of Release Notes section: $releasenotes'
           SLACK_TITLE: 'PR $prurl merged into master by ${{ github.event.pull_request.sender }}.'
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_TOKEN }}
