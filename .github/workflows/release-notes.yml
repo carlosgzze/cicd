@@ -1,4 +1,4 @@
-## Workflow for retrieve Release -notes ection from PRs
+## Workflow for retrieve Release Notes section from PRs
 
 name: CI
 
@@ -15,9 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Check out repository
       - uses: actions/checkout@v2
       
-      # Getting Pr information from the commit SHA
+      # Getting PR information from the commit SHA
       - name: Getting PR information
         run: |
           echo "Installing requirements"
@@ -33,17 +34,29 @@ jobs:
           echo "Getting Release Notes Section from PR body"
           curl "https://api.github.com/repos/carlosgzze/cicd/pulls/${{ github.event.pull_request.number }}" | jq '.body' | sed -e 's/\\r\\n/ /g' | sed -n -e 's/^.*### Release Notes //p' | sed -n -e 's/### Reviewers.*$//p' > releasenotes.out
           releasenotes=$(cat releasenotes.out)
-          echo "Building JSON message"
-          cat << EOF > ./slack_message.json
-          {
-          "text": "PR $prurl merged into master.\n Content of Release Notes section: $releasenotes"
-          }
-          EOF
-          echo github.event.number = ${{ github.event.number }}
-          echo github.event.pull_request.number = ${{ github.event.pull_request.number }}
       
-      - name: Notify to Slack
-        uses: opspresso/action-slack@master
-        env:
-          SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
-          JSON_PATH: ./slack_message.json
+      - name: Slack notification
+        uses: tiloio/slack-webhook-action@v1.1.2
+        with:
+          slack_web_hook_url: ${{ secrets.SLACK_TOKEN }}
+          slack_mention_mapping_file: ./.github/slack-name-mapping.json
+          slack_json: '{
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "PR was merged into master $prurl by {{GITHUB_ACTOR}}"
+                }
+              },
+              {
+                "type": "context",
+                "elements": [
+                  {
+                    "type": "mrkdwn",
+                    "text": ":speech_balloon: Release Notes section:  $releasenotes"
+                  }
+                ]
+              }
+            ]
+          }'
