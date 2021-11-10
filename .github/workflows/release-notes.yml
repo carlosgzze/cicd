@@ -39,7 +39,6 @@ jobs:
         uses: tiloio/slack-webhook-action@v1.1.2
         with:
           slack_web_hook_url: ${{ secrets.SLACK_TOKEN }}
-          slack_mention_mapping_file: ./.github/slack-name-mapping.json
           slack_json: '{
             "blocks": [
               {
