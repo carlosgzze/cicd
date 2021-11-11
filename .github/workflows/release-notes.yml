@@ -38,6 +38,7 @@ jobs:
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:
-          SLACK_MESSAGE: 'Content of Release Notes section: $releasenotes'
-          SLACK_TITLE: 'PR $prurl merged into master by ${{ github.event.pull_request.sender }}.'
+          SLACK_TITLE: 'PR ${prurl} merged into master by ${{ github.actor }}.'
+          SLACK_MESSAGE: 'Content of Release Notes section: ${releasenotes}'
           SLACK_WEBHOOK: ${{ secrets.SLACK_TOKEN }}
+          MSG_MINIMAL: true
