@@ -35,13 +35,12 @@ jobs:
           releasenotes=$(cat releasenotes.out)
           echo "Building JSON message"
           cat << EOF > ./slack_message.json
-          {
-          "text": "PR $prurl merged into master.\n Content of Release Notes section: $releasenotes"
-          }
+          curl ${{ secrets.SLACK_TOKEN }} \
+          --request POST \
+          --header 'Content-type: application/json' \
+          --data '{"text": "PR $prurl merged into master.\n Content of Release Notes section: $releasenotes"}'
           EOF
       
       # Sending slack notification
       - name: Slack Notification
-        run: |
-        curl -X POST ${{ secrets.SLACK_TOKEN }} -H "Content-type: application/json" -d @./slack_message.json
-        
+        run: ./slack_message.json
