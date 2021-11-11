@@ -44,5 +44,6 @@ jobs:
       # Sending slack notification
       - name: Slack Notification
         run: |
-        chmod 755 ./slack_message.json
-        ./slack_message.json
+          chmod 755 ./slack_message.json
+          sh ./slack_message.json
+        
