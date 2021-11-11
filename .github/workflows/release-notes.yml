@@ -36,9 +36,5 @@ jobs:
       
       # Sending slack notification
       - name: Slack Notification
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_TITLE: 'PR ${prurl} merged into master by ${{ github.actor }}.'
-          SLACK_MESSAGE: 'Content of Release Notes section: ${releasenotes}'
-          SLACK_WEBHOOK: ${{ secrets.SLACK_TOKEN }}
-          MSG_MINIMAL: true
+        run: |
+        curl -X POST -H "Content-type: application/json" --data '{"text": "PR $prurl merged into master.\n Content of Release Notes section: $releasenotes"}' ${{ secrets.SLACK_TOKEN }}
