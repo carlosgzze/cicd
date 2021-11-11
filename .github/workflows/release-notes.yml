@@ -33,8 +33,15 @@ jobs:
           echo "Getting Release Notes Section from PR body"
           curl "https://api.github.com/repos/carlosgzze/cicd/pulls/${{ github.event.pull_request.number }}" | jq '.body' | sed -e 's/\\r\\n/ /g' | sed -n -e 's/^.*### Release Notes //p' | sed -n -e 's/### Reviewers.*$//p' > releasenotes.out
           releasenotes=$(cat releasenotes.out)
+          echo "Building JSON message"
+          cat << EOF > ./slack_message.json
+          {
+          "text": "PR $prurl merged into master.\n Content of Release Notes section: $releasenotes"
+          }
+          EOF
       
       # Sending slack notification
       - name: Slack Notification
         run: |
-        curl -X POST -H "Content-type: application/json" --data '{"text": "PR $prurl merged into master.\n Content of Release Notes section: $releasenotes"}' ${{ secrets.SLACK_TOKEN }}
+        curl -X POST ${{ secrets.SLACK_TOKEN }} -H "Content-type: application/json" -d @./slack_message.json
+        
